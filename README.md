@@ -1,0 +1,2 @@
+# GeNet
+dotnet source generators
