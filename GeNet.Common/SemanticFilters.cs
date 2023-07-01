@@ -36,20 +36,4 @@ public static class SemanticFilters
 
         return null;
     }
-
-    public static ITypeSymbol? HasBaseType(
-        GeneratorSyntaxContext context,
-        string baseTypeName,
-        CancellationToken cancellationToken)
-    {
-        if (context.Node is not TypeDeclarationSyntax syntaxNode) return null;
-
-        var symbol = context.SemanticModel.GetDeclaredSymbol(syntaxNode) as ITypeSymbol;
-        var baseType = context.SemanticModel.Compilation.GetTypeByMetadataName(baseTypeName);
-
-        if (symbol is null) return null;
-        if (baseType is null) return null;
-
-        return symbol.AllInterfaces.Contains(baseType) ? symbol : null;
-    }
 }
