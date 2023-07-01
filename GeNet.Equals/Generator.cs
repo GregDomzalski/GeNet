@@ -1,17 +1,21 @@
 namespace GeNet.Equals;
 
-// TODO:
-// - What about inheritance? Checking base structures and allowing inheritance
-
 [Generator(LanguageNames.CSharp)]
 public class GenerateEqualsGenerator : IIncrementalGenerator
 {
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
-            "GeNet.Equals.Attribute.g.cs",
-            SourceText.From(Attribute.Text, Encoding.UTF8)));
+        context.RegisterPostInitializationOutput(ctx =>
+        {
+            ctx.AddSource(
+                "GeNet.Equals.GenerateEqualsAttribute.g.cs",
+                SourceText.From(Attributes.GenerateEqualsText, Encoding.UTF8));
+
+            ctx.AddSource(
+                "GeNet.Equals.IgnoredByEqualsAttribute.g.cs",
+                SourceText.From(Attributes.IgnoredByEqualsText, Encoding.UTF8));
+        });
 
         var equalityTypes = context.SyntaxProvider
             .ForAttributeWithMetadataName(
@@ -32,6 +36,11 @@ public class GenerateEqualsGenerator : IIncrementalGenerator
         GeneratorAttributeSyntaxContext context,
         CancellationToken cancellationToken)
     {
+        if (context.TargetSymbol is not INamedTypeSymbol typeSymbol)
+        {
+            return null;
+        }
+
         var genEqualsAttrib = context.SemanticModel.Compilation.GetTypeByMetadataName("GeNet.GenerateEqualsAttribute");
 
         if (genEqualsAttrib is null)
@@ -39,7 +48,11 @@ public class GenerateEqualsGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (context.TargetSymbol is not INamedTypeSymbol typeSymbol)
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var ignoreAttribute = context.SemanticModel.Compilation.GetTypeByMetadataName("GeNet.IgnoredByEqualsAttribute");
+
+        if (ignoreAttribute is null)
         {
             return null;
         }
@@ -50,6 +63,7 @@ public class GenerateEqualsGenerator : IIncrementalGenerator
             .Concat(typeSymbol.GetMembers().OfType<IFieldSymbol>().Where(f => f.IsImplicitlyDeclared == false))
             .Concat(typeSymbol.GetMembers().OfType<IPropertySymbol>())
             .Distinct(SymbolEqualityComparer.Default)
+            .Where(s => !s.HasAttribute(ignoreAttribute))
             .ToImmutableArray();
 
         if (relevantMembers.Length == 0)
@@ -62,6 +76,7 @@ public class GenerateEqualsGenerator : IIncrementalGenerator
             ContainingNamespace = typeSymbol.ContainingNamespace.IsGlobalNamespace ? null : typeSymbol.ContainingNamespace.ToString(),
             Kind = typeSymbol.TypeKind == TypeKind.Class ? "class" : "struct",
             Name = typeSymbol.Name,
+            QualifiedName = typeSymbol.ToDisplayString(),
             Members = relevantMembers
         };
     }
@@ -78,8 +93,11 @@ public class GenerateEqualsGenerator : IIncrementalGenerator
         foreach (var typeToGenerate in typesToGenerate)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
+
+            var fileName = FileName.Create(typeToGenerate.QualifiedName, "Equals");
             var sourceText = EqualsCodeBuilder.Generate(context, typeToGenerate);
-            context.AddSource($"{typeToGenerate.Name}.Equals.g.cs", sourceText);
+
+            context.AddSource(fileName, sourceText);
         }
     }
 }
