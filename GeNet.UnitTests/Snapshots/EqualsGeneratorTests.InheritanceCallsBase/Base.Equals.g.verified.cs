@@ -22,10 +22,10 @@ public partial class Base : IEquatable<Base>
         return base.Equals(obj);
     }
 
-    public bool Equals(Base? obj)
+    public bool Equals(Base? other)
     {
-        if (obj is null) return false;
-        return _field1 == obj._field1;
+        if (other is null) return false;
+        return _field1 == other._field1;
     }
 
     public override int GetHashCode()

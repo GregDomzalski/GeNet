@@ -22,10 +22,9 @@ public partial struct TestStruct : IEquatable<TestStruct>
         return base.Equals(obj);
     }
 
-    public bool Equals(TestStruct? obj)
+    public bool Equals(TestStruct other)
     {
-        if (obj is null) return false;
-        return _field1 == obj._field1;
+        return _field1 == other._field1;
     }
 
     public override int GetHashCode()

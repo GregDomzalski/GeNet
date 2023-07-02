@@ -61,9 +61,9 @@ public class GenerateEqualsGenerator : IIncrementalGenerator
 
         var relevantMembers = Enumerable.Empty<ISymbol>()
             .Concat(typeSymbol.GetMembers().OfType<IFieldSymbol>().Where(f => f.IsImplicitlyDeclared == false))
-            .Concat(typeSymbol.GetMembers().OfType<IPropertySymbol>())
+            .Concat(typeSymbol.GetMembers().OfType<IPropertySymbol>().Where(p => p.GetMethod is not null))
             .Distinct(SymbolEqualityComparer.Default)
-            .Where(s => !s.HasAttribute(ignoreAttribute))
+            .Where(s => !s.HasAttribute(ignoreAttribute) && !s.IsStatic)
             .ToImmutableArray();
 
         if (relevantMembers.Length == 0)
@@ -75,6 +75,7 @@ public class GenerateEqualsGenerator : IIncrementalGenerator
         {
             ContainingNamespace = typeSymbol.ContainingNamespace.IsGlobalNamespace ? null : typeSymbol.ContainingNamespace.ToString(),
             Kind = typeSymbol.TypeKind == TypeKind.Class ? "class" : "struct",
+            ValueType = typeSymbol.IsValueType,
             Name = typeSymbol.Name,
             QualifiedName = typeSymbol.ToDisplayString(),
             Members = relevantMembers

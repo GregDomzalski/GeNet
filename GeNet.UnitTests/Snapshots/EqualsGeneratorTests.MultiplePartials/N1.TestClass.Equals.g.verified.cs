@@ -24,11 +24,11 @@ namespace N1
             return base.Equals(obj);
         }
 
-        public bool Equals(TestClass? obj)
+        public bool Equals(TestClass? other)
         {
-            if (obj is null) return false;
-            return _field1 == obj._field1
-                && _field2 == obj._field2;
+            if (other is null) return false;
+            return _field1 == other._field1
+                && _field2 == other._field2;
         }
 
         public override int GetHashCode()

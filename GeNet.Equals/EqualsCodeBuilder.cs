@@ -4,7 +4,7 @@ internal static class EqualsCodeBuilder
 {
     public static SourceText Generate(SourceProductionContext context, GenerationInfo generationInfo)
     {
-        var comparisons = generationInfo.Members.Select(s => $"{s.Name} == obj.{s.Name}");
+        var comparisons = generationInfo.Members.Select(s => $"{s.Name} == other.{s.Name}");
         var hashes = generationInfo.Members.Select(s => $"hashCode.Add({s.Name});");
 
         SourceBuilder sb = new();
@@ -20,7 +20,8 @@ internal static class EqualsCodeBuilder
             using (sb.Block($"public partial {kind} {name} : IEquatable<{name}>"))
             {
                 EmitObjectEquals(sb, name);
-                EmitEquatableEquals(sb, name, comparisons);
+                if (generationInfo.ValueType) EmitEquatableEqualsValueType(sb, name, comparisons);
+                else EmitEquatableEqualsRefType(sb, name, comparisons);
                 EmitGetHashCode(sb, hashes);
                 EmitEqualityOperator(sb, name);
                 EmitInequalityOperator(sb, name);
@@ -42,11 +43,19 @@ internal static class EqualsCodeBuilder
         }
     }
 
-    private static void EmitEquatableEquals(SourceBuilder sb, string name, IEnumerable<string> comparisons)
+    private static void EmitEquatableEqualsRefType(SourceBuilder sb, string name, IEnumerable<string> comparisons)
     {
-        using (sb.Block($"public bool Equals({name}? obj)"))
+        using (sb.Block($"public bool Equals({name}? other)"))
         {
-            sb.AppendLine("if (obj is null) return false;");
+            sb.AppendLine("if (other is null) return false;");
+            sb.AppendLines(comparisons, "return", "&&", ";");
+        }
+    }
+
+    private static void EmitEquatableEqualsValueType(SourceBuilder sb, string name, IEnumerable<string> comparisons)
+    {
+        using (sb.Block($"public bool Equals({name} other)"))
+        {
             sb.AppendLines(comparisons, "return", "&&", ";");
         }
     }
