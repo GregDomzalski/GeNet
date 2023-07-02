@@ -3,13 +3,13 @@
   <PropertyGroup>
     <!-- Source generators MUST be netstandard2.0 -->
     <TargetFramework>netstandard2.0</TargetFramework>
-    
+
     <!-- We don't want to reference the source generator assembly directly in consuming projects -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    
+
     <!-- Analyze the analyzer! -->
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    
+
     <IsRoslynComponent>true</IsRoslynComponent>
 
     <!-- Build settings -->
@@ -17,6 +17,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <Version>$([System.DateTime]::Now.ToString('yyyy.MM.dd.HHmm'))</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +26,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" PrivateAssets="all" />
     <ProjectReference Include="..\GeNet.Common\GeNet.Common.csproj" PrivateAssets="all" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
@@ -39,4 +41,14 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="DeleteFiles" AfterTargets="Build">
+    <ItemGroup>
+      <FilesToDelete Include="**\*.nupkg"/>
+    </ItemGroup>
+    <Message Text="Deleting Files @(FilesToDelete)"/>
+    <Delete Files="@(FilesToDelete)">
+      <Output TaskParameter="DeletedFiles" ItemName="FilesDeleted"/>
+    </Delete>
+    <Message Text="Files deleted: @(FilesDeleted)"/>
+  </Target>
 </Project>
