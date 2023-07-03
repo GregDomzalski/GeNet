@@ -1,9 +1,5 @@
 namespace GeNet.UnitTests;
 
-// Test cases:
-// - Records / Interfaces - not supported
-// - What about inheritance? Checking base structures and allowing inheritance
-
 [UsesVerify]
 public class EqualsGeneratorTests
 {
@@ -18,7 +14,7 @@ public class TestClass
     public string _field1;
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -32,7 +28,7 @@ public class TestClass
     public string Prop1 { get; set; }
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -45,7 +41,7 @@ public class TestClass
 {
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -71,7 +67,7 @@ public class TestClass
 }
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -88,7 +84,7 @@ public class TestClass<T>
 }
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -110,7 +106,7 @@ public partial class TestClass
 }
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -124,7 +120,7 @@ public partial struct TestStruct
     public string _field1;
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -144,7 +140,7 @@ public class Base
     public string _field1;
 }";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 
     [Fact]
@@ -161,6 +157,6 @@ public interface ITest
 [GenerateEquals]
 public record Test(string Prop1);";
 
-        return SnapshotHelper.Verify(source);
+        return SnapshotHelper.VerifyEqualsGenerator(source);
     }
 }

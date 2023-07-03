@@ -32,6 +32,7 @@
 
     <!-- Project references -->
     <ProjectReference Include="..\GeNet.Equals\GeNet.Equals.csproj" />
+    <ProjectReference Include="..\GeNet.Disposable\GeNet.Disposable.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,10 +43,6 @@
     <EmbeddedResource Remove="**\*.verified.*" />
     <None Include="**\*.received.*" />
     <None Include="**\*.verified.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Snapshots\" />
   </ItemGroup>
 
 </Project>

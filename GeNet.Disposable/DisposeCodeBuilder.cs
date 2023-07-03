@@ -2,7 +2,7 @@ namespace GeNet.Disposable;
 
 internal static class DisposeCodeBuilder
 {
-    public static void Generate(SourceProductionContext context, GenerationInfo generationInfo)
+    public static SourceText Generate(SourceProductionContext context, GenerationInfo generationInfo)
     {
         SourceBuilder sb = new();
 
@@ -31,6 +31,8 @@ internal static class DisposeCodeBuilder
                 }
             }
         }
+
+        return sb.ToSourceText();
     }
 
     private static void EmitIDisposableDispose(SourceBuilder sb)
@@ -51,18 +53,26 @@ internal static class DisposeCodeBuilder
             sb.AppendLine("if (_disposed) { return; }");
             sb.AppendLine("if (disposing) { DisposeManaged(); }");
 
-            if (generationInfo.ExplicitUnmanagedDisposeMethod is null) return;
+            if (generationInfo.ExplicitUnmanagedDisposeMethod is not null)
+            {
+                sb.AppendLine("try { DisposeUnmanaged(); }");
+                sb.AppendLine("catch { /* ignored */ }");
+                sb.AppendLine();
+            }
 
-            sb.AppendLine("try { DisposeUnmanaged(); }");
-            sb.AppendLine("catch { /* ignored */ }");
-            sb.AppendLine();
+            if (generationInfo.BaseHasDisposeMethod)
+            {
+                sb.AppendLine("base.Dispose(disposing);");
+                sb.AppendLine();
+            }
+
             sb.AppendLine("_disposed = true;");
         }
     }
 
     private static void EmitThrowIfDisposed(SourceBuilder sb, string name)
     {
-        using (sb.Block("protected void ThrowIfDisposed()"))
+        using (sb.Block("private void ThrowIfDisposed()"))
         {
             using (sb.Block("if (_disposed)"))
             {

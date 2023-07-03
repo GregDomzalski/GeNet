@@ -52,6 +52,10 @@ public class GenerateDisposeGenerator : IIncrementalGenerator
         var disposeUnmanagedMethod = typeSymbol.FindMethod("DisposeUnmanaged");
         cancellationToken.ThrowIfCancellationRequested();
 
+        var hasBaseDispose = false;
+        if (typeSymbol.BaseType is not null)
+            hasBaseDispose = typeSymbol.BaseType.ImplementsInterface(disposableSymbol);
+
         return new GenerationInfo
         {
             ContainingNamespace = typeSymbol.GetNamespaceName(),
@@ -60,23 +64,28 @@ public class GenerateDisposeGenerator : IIncrementalGenerator
             DisposableMembers = relevantMembers,
             ExplicitManagedDisposeMethod = disposeManagedMethod,
             ExplicitUnmanagedDisposeMethod = disposeUnmanagedMethod,
+            BaseHasDisposeMethod = hasBaseDispose,
+            QualifiedName = typeSymbol.ToDisplayString()
         };
     }
 
     private static void GenerateSource(
         SourceProductionContext context,
-        ImmutableArray<GenerationInfo> types)
+        ImmutableArray<GenerationInfo> typesToGenerate)
     {
-        if (types.IsDefaultOrEmpty)
+        if (typesToGenerate.IsDefaultOrEmpty)
         {
             return;
         }
 
-        foreach (var type in types)
+        foreach (var typeToGenerate in typesToGenerate)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
-            DisposeCodeBuilder.Generate(context, type);
-            // context.AddSource($"{typeToGenerate.Name}.Disposable.g.cs", sourceText);
+
+            var fileName = FileName.Create(typeToGenerate.QualifiedName, "Dispose");
+            var sourceText = DisposeCodeBuilder.Generate(context, typeToGenerate);
+
+            context.AddSource(fileName, sourceText);
         }
     }
 }
