@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeNet.Equals", "GeNet.Equal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeNet.UnitTests", "GeNet.UnitTests\GeNet.UnitTests.csproj", "{87F95199-BB7B-41D5-8193-2E611299D9D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugProject", "DebugProject\DebugProject.csproj", "{5156B639-5391-4E16-8352-4824BF9EB127}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeNet.Disposable", "GeNet.Disposable\GeNet.Disposable.csproj", "{4E3970BB-C6E3-418E-B521-BEC659322F1B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeNet.Common", "GeNet.Common\GeNet.Common.csproj", "{E5737E6B-655E-40BE-A8A5-5EDDB00E4858}"
@@ -32,10 +30,6 @@ Global
 		{87F95199-BB7B-41D5-8193-2E611299D9D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87F95199-BB7B-41D5-8193-2E611299D9D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87F95199-BB7B-41D5-8193-2E611299D9D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5156B639-5391-4E16-8352-4824BF9EB127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5156B639-5391-4E16-8352-4824BF9EB127}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5156B639-5391-4E16-8352-4824BF9EB127}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5156B639-5391-4E16-8352-4824BF9EB127}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E3970BB-C6E3-418E-B521-BEC659322F1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E3970BB-C6E3-418E-B521-BEC659322F1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E3970BB-C6E3-418E-B521-BEC659322F1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
