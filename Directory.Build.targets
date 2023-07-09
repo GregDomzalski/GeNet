@@ -1,0 +1,18 @@
+<Project>
+    <Target Name="GetDependencyTargetPaths" Condition="'$(IsGeneratorProject)' == 'true'">
+        <ItemGroup>
+            <TargetPathWithTargetPlatformMoniker Include="..\GeNet.Common\bin\$(Configuration)\netstandard2.0\GeNet.Common.dll" IncludeRuntimeDependency="false"/>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="DeleteFiles" AfterTargets="Build" Condition="'$(IsGeneratorProject)' == 'true'">
+        <ItemGroup>
+            <FilesToDelete Include="**\*.nupkg"/>
+        </ItemGroup>
+        <Message Text="Deleting Files @(FilesToDelete)"/>
+        <Delete Files="@(FilesToDelete)">
+            <Output TaskParameter="DeletedFiles" ItemName="FilesDeleted"/>
+        </Delete>
+        <Message Text="Files deleted: @(FilesDeleted)"/>
+    </Target>
+</Project>

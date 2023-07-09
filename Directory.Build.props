@@ -1,0 +1,85 @@
+<Project>
+    <!-- For all projects -->
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
+        <Deterministic>true</Deterministic>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+        <Version>$([System.DateTime]::Now.ToString('yyyy.MM.dd.HHmm'))</Version>
+        <Authors>Greg Domzalski</Authors>
+        <RepositoryUrl>https://github.com/GregDomzalski/GeNet</RepositoryUrl>
+    </PropertyGroup>
+
+    <!-- Define which project is what type -->
+    <PropertyGroup>
+        <IsTestProject Condition="$(MSBuildProjectName.EndsWith('Tests', StringComparison.OrdinalIgnoreCase))">true</IsTestProject>
+        <IsTestProject Condition="!$(MSBuildProjectName.EndsWith('Tests', StringComparison.OrdinalIgnoreCase))">false</IsTestProject>
+        <IsCommonProject Condition="$(MSBuildProjectName.EndsWith('Common', StringComparison.OrdinalIgnoreCase))">true</IsCommonProject>
+        <IsCommonProject Condition="!$(MSBuildProjectName.EndsWith('Common', StringComparison.OrdinalIgnoreCase))">false</IsCommonProject>
+        <IsGeneratorProject Condition="('$(IsTestProject)' == 'false') AND ('$(IsCommonProject)' == 'false')">true</IsGeneratorProject>
+        <IsGeneratorProject Condition="('$(IsTestProject)' == 'true') OR ('$(IsCommonProject)' == 'true')">false</IsGeneratorProject>
+    </PropertyGroup>
+
+    <!-- For generator projects -->
+    <PropertyGroup Condition="'$(IsGeneratorProject)' == 'true'">
+        <!-- Source generators MUST target netstandard2.0 -->
+        <TargetFramework>netstandard2.0</TargetFramework>
+
+        <!-- We don't want to reference the source generator assembly directly in consuming projects -->
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+
+        <!-- Extra analysis for Roslyn components, such as source generators -->
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+        <IsRoslynComponent>true</IsRoslynComponent>
+
+        <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(IsGeneratorProject)' == 'true'">
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" PrivateAssets="all" />
+        <ProjectReference Include="..\GeNet.Common\GeNet.Common.csproj" PrivateAssets="all" />
+
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+
+    <!-- For common projects -->
+    <PropertyGroup Condition="'$(IsCommonProject)' == 'true'">
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(IsCommonProject)' == 'true'">
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
+    </ItemGroup>
+
+    <!-- For test projects -->
+    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+        <IsTestProejct>true</IsTestProejct>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+        <!-- Standard xUnit test packages -->
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+        <PackageReference Include="xunit" Version="2.4.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.2.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+
+        <!-- Roslyn packages -->
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" PrivateAssets="All" />
+    </ItemGroup>
+</Project>
