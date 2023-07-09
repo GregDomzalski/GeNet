@@ -19,6 +19,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <Version>$([System.DateTime]::Now.ToString('yyyy.MM.dd.HHmm'))</Version>
+    <Authors>Greg Domzalski</Authors>
+    <RepositoryUrl>https://github.com/GregDomzalski/GeNet</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
