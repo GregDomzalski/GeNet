@@ -22,4 +22,6 @@ jobs:
     - name: Package project
       run: dotnet pack -c Release
     - name: Publish packages
-      run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: |
+        dotnet nuget push "GeNet.Equals/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        dotnet nuget push "GeNet.Disposable/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
