@@ -1,8 +1,6 @@
 <Project>
     <!-- For all projects -->
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
@@ -16,19 +14,16 @@
 
     <!-- Define which project is what type -->
     <PropertyGroup>
-        <IsTestProject Condition="$(MSBuildProjectName.EndsWith('Tests', StringComparison.OrdinalIgnoreCase))">true</IsTestProject>
-        <IsTestProject Condition="!$(MSBuildProjectName.EndsWith('Tests', StringComparison.OrdinalIgnoreCase))">false</IsTestProject>
-        <IsCommonProject Condition="$(MSBuildProjectName.EndsWith('Common', StringComparison.OrdinalIgnoreCase))">true</IsCommonProject>
-        <IsCommonProject Condition="!$(MSBuildProjectName.EndsWith('Common', StringComparison.OrdinalIgnoreCase))">false</IsCommonProject>
-        <IsGeneratorProject Condition="('$(IsTestProject)' == 'false') AND ('$(IsCommonProject)' == 'false')">true</IsGeneratorProject>
-        <IsGeneratorProject Condition="('$(IsTestProject)' == 'true') OR ('$(IsCommonProject)' == 'true')">false</IsGeneratorProject>
+        <IsGeNetTestProject Condition="$(MSBuildProjectName.EndsWith('Tests', StringComparison.OrdinalIgnoreCase))">true</IsGeNetTestProject>
+        <IsGeNetTestProject Condition="!$(MSBuildProjectName.EndsWith('Tests', StringComparison.OrdinalIgnoreCase))">false</IsGeNetTestProject>
+        <IsGeNetCommonProject Condition="$(MSBuildProjectName.EndsWith('Common', StringComparison.OrdinalIgnoreCase))">true</IsGeNetCommonProject>
+        <IsGeNetCommonProject Condition="!$(MSBuildProjectName.EndsWith('Common', StringComparison.OrdinalIgnoreCase))">false</IsGeNetCommonProject>
+        <IsGeNetGeneratorProject Condition="('$(IsGeNetTestProject)' == 'false') AND ('$(IsGeNetCommonProject)' == 'false')">true</IsGeNetGeneratorProject>
+        <IsGeNetGeneratorProject Condition="('$(IsGeNetTestProject)' == 'true') OR ('$(IsGeNetCommonProject)' == 'true')">false</IsGeNetGeneratorProject>
     </PropertyGroup>
 
     <!-- For generator projects -->
-    <PropertyGroup Condition="'$(IsGeneratorProject)' == 'true'">
-        <!-- Source generators MUST target netstandard2.0 -->
-        <TargetFramework>netstandard2.0</TargetFramework>
-
+    <PropertyGroup Condition="'$(IsGeNetGeneratorProject)' == 'true'">
         <!-- We don't want to reference the source generator assembly directly in consuming projects -->
         <IncludeBuildOutput>false</IncludeBuildOutput>
 
@@ -40,7 +35,7 @@
         <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(IsGeneratorProject)' == 'true'">
+    <ItemGroup Condition="'$(IsGeNetGeneratorProject)' == 'true'">
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" PrivateAssets="all" />
         <ProjectReference Include="..\GeNet.Common\GeNet.Common.csproj" PrivateAssets="all" />
@@ -49,23 +44,21 @@
     </ItemGroup>
 
     <!-- For common projects -->
-    <PropertyGroup Condition="'$(IsCommonProject)' == 'true'">
+    <PropertyGroup Condition="'$(IsGeNetCommonProject)' == 'true'">
         <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(IsCommonProject)' == 'true'">
+    <ItemGroup Condition="'$(IsGeNetCommonProject)' == 'true'">
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
     </ItemGroup>
 
     <!-- For test projects -->
-    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
-        <IsTestProejct>true</IsTestProejct>
+    <PropertyGroup Condition="'$(IsGeNetTestProject)' == 'true'">
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <ItemGroup Condition="'$(IsGeNetTestProject)' == 'true'">
         <!-- Standard xUnit test packages -->
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
         <PackageReference Include="xunit" Version="2.4.2" />
