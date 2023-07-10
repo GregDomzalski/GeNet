@@ -1,16 +1,33 @@
 <Project>
     <!-- For all projects -->
     <PropertyGroup>
+        <!-- Compiler settings -->
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <Deterministic>true</Deterministic>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
-        <Version>$([System.DateTime]::Now.ToString('yyyy.MM.dd.HHmm'))</Version>
+        <!-- NuGet Packaging -->
         <Authors>Greg Domzalski</Authors>
         <RepositoryUrl>https://github.com/GregDomzalski/GeNet</RepositoryUrl>
+        <Copyright>Copyright (c) Greg Domzalski 2023</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>genet_icon.png</PackageIcon>
+        <PackageReadmeFile>$(MSBuildProjectName).readme.md</PackageReadmeFile>
+
+        <!-- SourceLink -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\genet_icon.png" Pack="true" PackagePath="\" Visible="false" />
+        <None Include="..\docs\packages\$(MSBuildProjectName).readme.md" Pack="true" PackagePath="\" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    </ItemGroup>
 
     <!-- Define which project is what type -->
     <PropertyGroup>

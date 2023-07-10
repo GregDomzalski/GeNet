@@ -1,5 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <!-- Source generators MUST be netstandard2.0 -->
         <TargetFramework>netstandard2.0</TargetFramework>
+        
+        <!-- NuGet package information -->
+        <PackageId>GeNet.Equals</PackageId>
+        <Version>1.0.0-prerelease.20230709.1</Version>
+        <Title>GeNet.Equals - Source generator for Equals, IEquality, and more</Title>
+        <PackageTags>GeNet;Source Generator;Equals;IEquality;GetHashCode</PackageTags>
+        <Description>
+            GeNet - Generators for .NET
+            
+            The GeNet.Equals source generator automatically implements `IEquality`, `Object.Equals`, `GetHashCode`, and
+            the `==` and `!=` operators. Use the `GenerateEquals` attribute on your classes and structs and declare
+            them as partial.
+            
+            GeNet is a suite of modern source generators for .NET that aim to reduce the need for reflection, text templating,
+            or IL weaving based approaches for removing boiler plate code in your .NET projects.
+        </Description>
     </PropertyGroup>
 </Project>

@@ -2,5 +2,21 @@
     <PropertyGroup>
         <!-- Source generators MUST be netstandard2.0 -->
         <TargetFramework>netstandard2.0</TargetFramework>
+        
+        <!-- NuGet package information -->
+        <PackageId>GeNet.Disposable</PackageId>
+        <Version>1.0.0-prerelease.20230709.1</Version>
+        <Title>GeNet.Disposable - Source generator for IDisposable</Title>
+        <PackageTags>GeNet;Source Generator;IDisposable;Dispose</PackageTags>
+        <Description>
+            GeNet - Generators for .NET
+            
+            The GeNet.Disposable source generator automatically implements `IDisposable`. Include this package and simply
+            inherhit from IDisposable. Any IDisposable members will be automatically freed. Implement `DisposeManaged` or
+            `DisposeUnmanaged` to customize how your resources should be cleaned up.
+            
+            GeNet is a suite of modern source generators for .NET that aim to reduce the need for reflection, text templating,
+            or IL weaving based approaches for removing boiler plate code in your .NET projects.
+        </Description>
     </PropertyGroup>
 </Project>
