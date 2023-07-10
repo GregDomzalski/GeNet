@@ -1,9 +1,17 @@
 <Project>
+    <ItemGroup Condition="'$(IsGeNetGeneratorProject)' == 'true'">
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+
     <Target Name="GetDependencyTargetPaths" Condition="'$(IsGeNetGeneratorProject)' == 'true'">
         <ItemGroup>
             <TargetPathWithTargetPlatformMoniker Include="..\GeNet.Common\bin\$(Configuration)\netstandard2.0\GeNet.Common.dll" IncludeRuntimeDependency="false"/>
         </ItemGroup>
     </Target>
+
+    <PropertyGroup Condition="'$(IsGeNetGeneratorProject)' == 'true'">
+        <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+    </PropertyGroup>
 
     <Target Name="DeleteFiles" AfterTargets="Build" Condition="'$(IsGeNetGeneratorProject)' == 'true'">
         <ItemGroup>
